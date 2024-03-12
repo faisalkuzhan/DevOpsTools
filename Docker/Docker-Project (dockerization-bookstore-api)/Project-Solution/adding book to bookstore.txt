@@ -1,0 +1,24 @@
+curl --request POST \
+-url 'http://ec2-54-221-156-235.compute-1.amazonaws.com/books' \
+--header 'content-type: application/json' \
+--data '{"author":"Ahmet", "title":"The Alchemist new version", "is_sold":true}'
+
+curl --request POST \
+-url 'http://ec2-107-23-136-128.compute-1.amazonaws.com/books' \
+--header 'content-type: application/json' \
+--data '{"author":"Gabriel Garcia Marquez", "title":"One Hundred Years of Solitude", "is_sold":true}'
+
+curl --request POST \
+-url 'ec2-107-23-136-128.compute-1.amazonaws.com/books' \
+--header 'content-type: application/json' \
+--data '{"author":"Rahmatullah ", "title":"Techproed Devops Book ", "is_sold":true}'
+
+curl --request PUT \
+--url 'http://[ec2-hostname]/books/3' \
+--header 'content-type: application/json' \
+--data '{"author":"New Author Name", "title":"New Book Title"}'
+
+
+
+curl --request DELETE \
+--url 'http://[ec2-hostname]/books/2'
