@@ -1,0 +1,10 @@
+# aws_access_key = ""
+# aws_secret_key = ""
+myami = "ami-02396cdd13e9a1257"
+mykey="xxxxxxxxxxxxxx"
+mykeypath = "~/.ssh/xxxxxxx.pem"
+tags1 = ["control_node", "node_1", "node_2"]
+tags2 = ["control_node", "web_server", "db_server"]
+instancetype = "t2.micro"
+num = 3
+region = "us-east-1"
