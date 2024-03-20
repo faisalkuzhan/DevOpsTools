@@ -1,0 +1,47 @@
+---
+# tasks file for /home/ec2-user/ansible/roles/postgre
+- name: copy files to the postgres node
+  ansible.builtin.copy:
+    src: /home/ec2-user/ansible-project/postgres/
+    dest: /home/ec2-user/postgresql
+
+- name: remove tech_postgre container
+  community.docker.docker_container:
+    name: tech_postgre
+    state: absent
+    force_kill: true
+
+- name: remove techpro/postgre image
+  community.docker.docker_image:
+    name: techpro/postgre
+    state: absent
+
+- name: build image
+  community.docker.docker_image:
+    name: techpro/postgre
+    build:
+      path: /home/ec2-user/postgresql
+    source: build
+    state: present
+  register: image_info
+
+- name: print the image_info
+  ansible.builtin.debug:
+    var: image_info
+
+- name: run tech_postgre container
+  community.docker.docker_container:
+    name: tech_postgre    
+    image: techpro/postgre  
+    state: started
+    ports:
+    - "5432:5432"
+    env: 
+      POSTGRES_PASSWORD: "Pp12345678"
+    volumes:
+      - /db-data:/var/lib/postgresql/data
+  register: container_info
+
+- name: print the container_info
+  ansible.builtin.debug:
+    var: container_info

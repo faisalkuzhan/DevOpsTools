@@ -1,0 +1,30 @@
+- name: Installing Docker
+  gather_facts: No
+  any_errors_fatal: true
+  hosts: _development
+  become: true
+  roles:
+    - common
+  
+- name: Building images and running container.
+  gather_facts: No
+  any_errors_fatal: true
+  hosts: _ansible_postgresql
+  become: true
+  roles:
+    - postgre
+
+- name: Building images and running container.
+  gather_facts: No
+  any_errors_fatal: true
+  hosts: _ansible_nodejs
+  become: true
+  roles:
+    - nodejs
+- name: Building images and running container.
+  gather_facts: No
+  any_errors_fatal: true
+  hosts: _ansible_react
+  become: true
+  roles:
+    - react

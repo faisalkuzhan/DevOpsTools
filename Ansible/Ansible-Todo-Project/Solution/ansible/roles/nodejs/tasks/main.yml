@@ -1,0 +1,45 @@
+---
+# tasks file for /home/ec2-user/ansible/roles/nodejs
+- name: copy files to the nodejs node
+  ansible.builtin.copy:
+    src: /home/ec2-user/ansible-project/nodejs/
+    dest: /home/ec2-user/nodejs
+
+- name: remove tech_nodejs container
+  community.docker.docker_container:
+    name: tech_nodejs
+    state: absent
+    force_kill: true
+
+- name: remove techpro/nodejs image
+  community.docker.docker_image:
+    name: techpro/nodejs
+    state: absent
+
+- name: build image
+  community.docker.docker_image:
+    name: techpro/nodejs
+    build:
+      path: /home/ec2-user/nodejs
+    source: build
+    state: present
+  register: image_info
+
+- name: print the image_info
+  ansible.builtin.debug:
+    var: image_info
+
+- name: run tech_nodejs container
+  community.docker.docker_container:
+    name: tech_nodejs    
+    image: techpro/nodejs 
+    state: started
+    ports:
+    - "5000:5000"
+    
+  register: container_info
+
+- name: print the container_info
+  ansible.builtin.debug:
+    var: container_info
+    

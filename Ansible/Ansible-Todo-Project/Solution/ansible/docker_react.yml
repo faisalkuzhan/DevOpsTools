@@ -1,0 +1,95 @@
+- name: Installing Docker, Building images and running container.
+  gather_facts: No
+  any_errors_fatal: true
+  hosts: _ansible_react
+  become: true
+  tasks:
+    - name: upgrade all packages
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+    - name: Remove docker if installed from CentOS repo
+      yum:
+        name:
+          - docker
+          - docker-client
+          - docker-client-latest
+          - docker-common
+          - docker-latest
+          - docker-latest-logrotate
+          - docker-logrotate
+          - docker-engine
+        state: absent
+
+    - name: Install required pkgs
+      yum:
+        name:
+          - yum-utils
+        state: latest
+
+    - name: Add Docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+
+    - name: Install Docker
+      yum:
+        name:
+          - docker-ce
+        state: latest
+
+    - name: Add user ec2-user to docker group
+      ansible.builtin.user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    
+    - name: copy files to the react node
+      ansible.builtin.copy:
+        src: /home/ec2-user/ansible-project/react/
+        dest: /home/ec2-user/react
+
+    - name: remove tech_react container
+      community.docker.docker_container:
+        name: tech_react
+        state: absent
+        force_kill: true
+
+    - name: remove techpro/react image
+      community.docker.docker_image:
+        name: techpro/react
+        state: absent
+
+    - name: build image
+      community.docker.docker_image:
+        name: techpro/react
+        build:
+          path: /home/ec2-user/react
+        source: build
+        state: present
+      register: image_info
+
+    - name: print the image_info
+      ansible.builtin.debug:
+        var: image_info
+
+    - name: run tech_react container
+      community.docker.docker_container:
+        name: tech_react    
+        image: techpro/react 
+        state: started
+        ports:
+        - "3000:3000"
+        
+      register: container_info
+
+    - name: print the container_info
+      ansible.builtin.debug:
+        var: container_info
+    
