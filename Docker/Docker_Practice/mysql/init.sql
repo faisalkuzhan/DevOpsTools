@@ -1,0 +1,6 @@
+CREATE USER 'techpro'@'%' IDENTIFIED BY '123456789';
+GRANT ALL PRIVILEGES ON *.* TO 'techpro'@'%';
+FLUSH PRIVILEGES;
+CREATE DATABASE mydatabase;
+USE mydatabase;
+CREATE TABLE visitors (name VARCHAR(30), email VARCHAR(30), phone VARCHAR(30), photo VARCHAR(30));
